@@ -1,0 +1,78 @@
+SELECT B.department_name, A.department_id, sum(salary), max(salary), min(salary) 
+FROM employees A inner join departments B
+on A.department_id = B.department_id
+--where sum(salary) > 50000;
+GROUP BY department_id
+having sum(salary) > 50000;
+
+SELECT B.department_name, A.department_id, SUM(salary), MAX(salary), MIN(salary) 
+FROM employees A INNER JOIN departments B 
+ON A.department_id = B.department_id
+GROUP BY B.department_name, A.department_id
+HAVING SUM(salary) > 10000;
+
+SELECT * FROM employees;
+--<문제1> 'jking' 이란 이메일을 갖은 직원의 이름 급여와 커미션을 출력하라 (INITCAP, UPPER 사용)
+SELECT FIRST_NAME, LAST_NAME, INITCAP(EMAIL) 
+FROM employees 
+WHERE EMAIL=UPPER('jking');
+
+--<문제2> '이름이 6글자 이상인 직원의 직원번호과 이름과 급여를 출력하라
+SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME, SALARY
+FROM employees
+WHERE LENGTH(FIRST_NAME) + LENGTH(LAST_NAME) > 6;
+
+--<문제3> 03년도에 입사한 사원 알아내기
+--(비교 연산자와 AND 연산자, BEETWEEN AND 연산자, SUBSTR 함수)
+SELECT FIRST_NAME, LAST_NAME, HIRE_DATE
+FROM employees
+WHERE SUBSTR(HIRE_DATE, 1,2) = 03;
+
+SELECT FIRST_NAME, LAST_NAME, HIRE_DATE
+FROM employees
+WHERE HIRE_DATE BETWEEN ('03/01/01') AND ('03/12/31');
+
+SELECT FIRST_NAME, LAST_NAME, HIRE_DATE
+FROM employees
+WHERE HIRE_DATE >= '03/01/01'  AND HIRE_DATE <= '03/12/31';
+
+--<문제4> 이름이 K로 끝나는 직원을 검색 
+--(LIKE 연산자와 와일드 카드(%),SUBSTR 함수)
+SELECT FIRST_NAME, SUBSTR(FIRST_NAME,-1)
+FROM employees 
+WHERE UPPER(SUBSTR(FIRST_NAME,-1)) LIKE '%K';
+
+--<문제5> 직원 번호가 짝수인 직원들의 직원 번호와 이름과 직급을 출력.
+SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME, JOB_ID
+FROM employees
+WHERE MOD(EMPLOYEE_ID, 2) = 0;
+
+--<문제6> 모든 직원은 자신의 상관 (MANAGER_ID)가 있다 하지만 EMPLOYEES 테이블에 
+--유일하게 상관이 없는 로우가 있는데 그 사원의 MANAGER_ID 칼럼값이 NULL이다. 상관이 
+--없는 대표이사만 출력하되 MANAGER_ID 칼럼값 NULL 대신 CEO로 출력한다.
+SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME, 
+       COALESCE(JOB_ID, 'CEO') AS CEO
+FROM employees
+WHERE MANAGER_ID IS NULL;
+
+--<문제7> 부서별에따라 급여를 인상하도록 하자. (직원번호, 직원명, 직급, 급여)
+--부서명의 'Marketing'인 직원은 5%, 'purchasing'인 사원은 10% 
+--'human resource'인 사원은 15%, 'IT'인 직원은 20%인 인상한다.
+
+SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME, 
+       CASE 
+           WHEN DEPARTMENT_ID = 20 THEN 'Marketing'
+           WHEN DEPARTMENT_ID = 30 THEN 'Purchasing'
+           WHEN DEPARTMENT_ID = 40 THEN 'Human Resources'
+           WHEN DEPARTMENT_ID = 60 THEN 'IT'
+       END AS DEPARTMENT_NAME,
+       SALARY * 
+           CASE 
+               WHEN DEPARTMENT_ID = 20 THEN 1.05 
+               WHEN DEPARTMENT_ID = 30 THEN 1.10 
+               WHEN DEPARTMENT_ID = 40 THEN 1.15 
+               WHEN DEPARTMENT_ID = 60 THEN 1.20 
+               ELSE 1.00 
+           END AS INCREASED_SALARY
+FROM EMPLOYEES
+ORDER BY DEPARTMENT_ID;
