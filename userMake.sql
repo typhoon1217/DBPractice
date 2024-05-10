@@ -1,0 +1,7 @@
+ALTER SESSION SET "_ORACLE_SCRIPT"=true;
+    drop user video CASCADE;
+    create user video IDENTIFIED by video
+     DEFAULT TABLESPACE USERS
+     TEMPORARY TABLESPACE TEMP;
+GRANT CONNECT, RESOURCE, DBA TO video;
+     

@@ -76,3 +76,35 @@ SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME,
            END AS INCREASED_SALARY
 FROM EMPLOYEES
 ORDER BY DEPARTMENT_ID;
+
+
+SELECT EMPLOYEE_ID, FIRST_NAME, JOB_ID, SALARY,
+    CASE 
+        WHEN DEPARTMENT_NAME = 'Marketing'    	 THEN SALARY * 1.05
+        WHEN DEPARTMENT_NAME = 'Purchasing'    	 THEN SALARY * 1.1
+        WHEN DEPARTMENT_NAME = 'Human Resources'   THEN SALARY * 1.15
+        WHEN DEPARTMENT_NAME = 'IT'        		 THEN SALARY * 1.2
+        ELSE SALARY 
+    END INCREASED_SALARY
+FROM EMPLOYEES 
+INNER JOIN DEPARTMENTS ON EMPLOYEES.DEPARTMENT_ID = DEPARTMENTS.DEPARTMENT_ID
+WHERE DEPARTMENTS.DEPARTMENT_NAME IN('Marketing','Purchasing','Human Resources','IT');
+﻿
+select employee_id,first_name,salary,
+    CASE 
+    when department_id= 20 then salary*0.05
+    when department_id= 30 then salary*0.1
+    when department_id= 40 then salary*0.15
+    when department_id= 60 then salary*0.2
+    end new_commission
+from employees
+where department_id in (20, 30, 40, 60); 
+
+select EMPLOYEE_ID,FIRST_NAME,JOB_ID,decode(DEPARTMENT_NAME,'Marketing', SALARY*1.05, 'Purchasing',SALARY*1.1, 'Human Resources', SALARY*1.15, 'IT', SALARY*1.2) as SALARY
+from EMPLOYEES A inner join DEPARTMENTS B
+on A.DEPARTMENT_ID = B.DEPARTMENT_ID
+where DEPARTMENT_NAME in ('Marketing', 'Purchasing', 'Human Resources', 'IT')
+order by EMPLOYEE_ID;
+
+
+
